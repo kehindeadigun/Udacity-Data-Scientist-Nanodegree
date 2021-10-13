@@ -34,7 +34,6 @@ def load_data(database_filepath):
     Y numpy array: numpy Array: contains the message target values.
     category_names numpy Array:  contains the category name of each target value.
     """
-    
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql('SELECT * FROM messages',engine)
     target = df.drop(columns = ['id','message','original','genre'])
@@ -112,19 +111,40 @@ def save_model(model, model_filepath=''):
     except:
         best_model = model
         
-    if model_filepath != '':
     if not path.exists(model_filepath):
         print('WARNING: Save Path does not exists, Saving to default folder')
-
     model_filepath = model_filepath+'classifier.pkl'
 
     with open(model_filepath, 'wb') as file:
         joblib.dump(best_model, file)
 
 
+def is_path(path, checktype='dir'):
+    """Checks if a path or directory exists. 
+    
+    Args:
+    path str: A string representing a path or directory. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
+    checkdir str: A string representing a path or directory.
+    
+    Returns:
+    A boolean value: true if the path or directory exists and false otherwise.
+     
+    """
+    if checktype == 'dir':
+        if not path.isdir(path):
+            print('WARNING: Save Path does not exist.')
+            return False
+    if checktype == 'file':
+        if not path.isfile(path):
+            print('WARNING: File path does not exist.')
+            return False
+    return True
+
+
 def main():
-    if len(sys.argv) == 3:
-        database_filepath, model_filepath = sys.argv[1:]
+    inputs = sys.argv
+    if (len(inputs) == 3) and is_path(inputs[1],'file') and is_path(inputs[2]):
+        database_filepath, model_filepath = inputs[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
@@ -139,7 +159,7 @@ def main():
         evaluate_model(model, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model, '')
+        save_model(model, model_filepath)
 
         print('Trained model saved!')
 
@@ -147,8 +167,8 @@ def main():
         print('Please provide the filepath of the disaster messages database '\
               'as the first argument and the filepath of the pickle file to '\
               'save the model to as the second argument. \n\nExample: python '\
-              'train_classifier.py ../data/DisasterResponse.db classifier.pkl')
-
+              'train_classifier.py ../data/DisasterResponse.db classifier.pkl'\
+              'and ascertain the database exists and the save path exists')
 
 if __name__ == '__main__':
     main()
