@@ -20,34 +20,57 @@ import numpy as np
 
 import re
 
+import joblib
+
 def load_data(database_filepath):
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql('SELECT * FROM messages',engine)
     X = df[['message']]
     Y = df.drop(columns=['id','message','original','genre'])
-    return X, Y
+    category_names = list(Y.columns)
+    return X, Y, category_names
 
 
 def tokenize(text):
-    pass
+    text = re.sub(r'[^a-zA-Z0-9]',' ',text)
+    words = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+    return [lemmatizer.lemmatize(word) for word in words]
 
 
 def build_model():
-    pass
+    
+    vectorizer = CountVectorizer(tokenizer=tokenize, stop_words=stopwords.words("english"))
+    transformer = TfidfTransformer()
+    classifier = MultiOutputClassifier(RandomForestClassifier())
+    
+    pipeline = Pipeline([('vect', vectorizer),
+                         ('tfidf', transformer),
+                         ('clf', classifier)
+                        ])
+    
+    parameters = {'vect__ngram_range':[(1, 1),(1,2)],
+                  'clf__estimator__n_estimators':list(range(1,30,5))
+                 }
+    model = GridSearchCV(pipeline, parameters)
+    return model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    for i in range(y_pred.shape[1]):
+        class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(3)]
+        print('Column ',i+1,' : ',category_names[i])
+        print(classification_report(y_pred[:,i], y_test.values[:,i], target_names=class_names))
+        #print lines to visually separate categories in the output print
+        print('-'*65)
 
 
 def save_model(model, model_filepath):
-    import joblib
 
-    best_model = adacv.best_estimator_
+    best_model = model.best_estimator_
+    filename = 'classifier.pkl'
 
-    filename = 'test.pkl'
-
-    with open(filename, 'wb') as file:
+    with open(model_filepath, 'wb') as file:
         joblib.dump(best_model, file)
 
 
