@@ -4,7 +4,6 @@ import numpy as np
 from sqlalchemy import create_engine
 from os import path
 
-
 def is_path(filepath, checktype='dir'):
     """Checks if a path or directory exists. 
     
@@ -30,8 +29,8 @@ def check_inputs(inputs, file_types):
     """Checks if multiple inputs exist as files or directories. Uses the is_path function. 
     
     Args:
-    inputs list or array: Contains all the directories to check.
-    file_types list or array: Contains the expected file type for each input. Each list value should be a string of either 'file' or 'dir'
+    inputs list or array of strings: Contains all the directories to check.
+    file_types list or array of strings: Contains the expected file type for each input. Each list value should be a string of value 'file' or 'dir'
     
     Returns:
     A boolean value: true only if the all path or directories exist and false otherwise.
@@ -102,11 +101,14 @@ def save_data(df, database_filename):
 
 
 def main():
+    
     inputs = sys.argv
     file_types = ['file','file']
+    
     if (len(inputs) == 4) and check_inputs(inputs[1:-1], file_types):
+        
         messages_filepath, categories_filepath, database_filepath = inputs[1:]
-
+        
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'
               .format(messages_filepath, categories_filepath))
         df = load_data(messages_filepath, categories_filepath)

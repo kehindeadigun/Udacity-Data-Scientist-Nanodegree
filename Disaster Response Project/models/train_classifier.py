@@ -1,4 +1,5 @@
 import sys
+
 import nltk 
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -13,14 +14,22 @@ from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
-from sqlalchemy import create_engine
-
+import joblib
 import pandas as pd
 import numpy as np
-
 import re
-import joblib
+
+from sqlalchemy import create_engine
 from os import path
+
+sys.path.append('../data/')
+
+from process_data import check_inputs
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 
 def load_data(database_filepath):
     """Loads data from a defined filepath
@@ -39,7 +48,8 @@ def load_data(database_filepath):
     target = df.drop(columns = ['id','message','original','genre'])
     
     X = df['message'].values
-    target = df.drop(columns =['id','message','original','genre']).values
+    Y = target.values
+    category_names = np.array(target.columns)
     return X, Y, category_names
 
 
@@ -52,11 +62,10 @@ def tokenize(text):
     Returns: 
     A list of tokens or tokenized words.
     """
-    text = re.sub(r'[^a-zA-Z0-9]',' ',text)
-    words = word_tokenize(text)
+    clean_text = re.sub(r'[^a-zA-Z0-9]',' ',text)
+    tokens = word_tokenize(clean_text)
     lemmatizer = WordNetLemmatizer()
-    return [lemmatizer.lemmatize(word) for word in words]
-
+    return [lemmatizer.lemmatize(word).lower().strip() for word in tokens]
 
 def build_model():
     """
@@ -68,7 +77,7 @@ def build_model():
     
     vectorizer = CountVectorizer(tokenizer=tokenize, stop_words=stopwords.words("english"))
     transformer = TfidfTransformer()
-    classifier = MultiOutputClassifier(RandomForestClassifier())
+    classifier = MultiOutputClassifier(RandomForestClassifier(verbose=1))
     
     pipeline = Pipeline([('vect', vectorizer),
                          ('tfidf', transformer),
@@ -77,8 +86,8 @@ def build_model():
     
     parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(1,30,5)) }
     
-    model = GridSearchCV(pipeline, parameters)
-    return model
+    model = GridSearchCV(pipeline, parameters, verbose=1)
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -90,11 +99,15 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Y_test numpy array, list or dataframe: Contains test values from the target
     category_names numpy array or list: Contains the category name of each target value.
     """
-    
-    for i in range(y_pred.shape[1]):
-        class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(3)]
+    Y_pred = model.predict(X_test)
+    for i in range(Y_pred.shape[1]):
+        #for the first class, we have 3 labels and subsequent classes have 2 
+        if i == 0:
+            class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(3)]
+        else:
+            class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(2)]
         print('Column ',i+1,' : ',category_names[i])
-        print(classification_report(y_pred[:,i], y_test[:,i], target_names=class_names))
+        print(classification_report(Y_pred[:,i], Y_test[:,i], target_names=class_names))
         #print lines to visually separate categories in the output print
         print('-'*65)
 
@@ -110,40 +123,13 @@ def save_model(model, model_filepath=''):
         best_model = model.best_estimator_
     except:
         best_model = model
-        
-    if not path.exists(model_filepath):
-        print('WARNING: Save Path does not exists, Saving to default folder')
-    model_filepath = model_filepath+'classifier.pkl'
-
-    with open(model_filepath, 'wb') as file:
-        joblib.dump(best_model, file)
-
-
-def is_path(path, checktype='dir'):
-    """Checks if a path or directory exists. 
     
-    Args:
-    path str: A string representing a path or directory. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
-    checkdir str: A string representing a path or directory.
-    
-    Returns:
-    A boolean value: true if the path or directory exists and false otherwise.
-     
-    """
-    if checktype == 'dir':
-        if not path.isdir(path):
-            print('WARNING: Save Path does not exist.')
-            return False
-    if checktype == 'file':
-        if not path.isfile(path):
-            print('WARNING: File path does not exist.')
-            return False
-    return True
+    joblib.dump(best_model, model_filepath, compress=1)
 
 
 def main():
     inputs = sys.argv
-    if (len(inputs) == 3) and is_path(inputs[1],'file') and is_path(inputs[2]):
+    if (len(inputs) == 3) and check_inputs(inputs[1:-1], ['file']):
         database_filepath, model_filepath = inputs[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)
