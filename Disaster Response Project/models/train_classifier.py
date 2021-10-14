@@ -50,6 +50,7 @@ def load_data(database_filepath):
     X = df['message'].values
     Y = target.values
     category_names = np.array(target.columns)
+    
     return X, Y, category_names
 
 
@@ -87,7 +88,7 @@ def build_model():
     parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(1,30,5)) }
     
     model = GridSearchCV(pipeline, parameters, verbose=1)
-    return model
+    return pipeline
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -101,13 +102,19 @@ def evaluate_model(model, X_test, Y_test, category_names):
     """
     Y_pred = model.predict(X_test)
     for i in range(Y_pred.shape[1]):
-        #for the first class, we have 3 labels and subsequent classes have 2 
-        if i == 0:
-            class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(3)]
-        else:
-            class_names = ['-'.join([str(category_names[i]), str(j)]) for j in range(2)]
-        print('Column ',i+1,' : ',category_names[i])
-        print(classification_report(Y_pred[:,i], Y_test[:,i], target_names=class_names))
+        pred_col = Y_pred[:,i]
+        test_col = Y_test[:,i]
+        #get the unique class categories for each column
+
+        unique_classes = np.unique(pred_col)
+        class_names = ['-'.join([str(category_names[i]), str(j)]) for j in unique_classes]
+        
+        print(f'Column {i+1} : {category_names[i]}')
+        print(f'Classes: {" ".join(class_names)}')
+        try:
+            print(classification_report(pred_col, test_col, labels=unique_classes, target_names=class_names))
+        except:
+            pass
         #print lines to visually separate categories in the output print
         print('-'*65)
 
