@@ -2,6 +2,46 @@ import sys
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
+from os import path
+
+
+def is_path(filepath, checktype='dir'):
+    """Checks if a path or directory exists. 
+    
+    Args:
+    path str: A string representing a path or directory. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
+    checkdir str: A string representing a path or directory.
+    
+    Returns:
+    A boolean value: true if the path or directory exists and false otherwise.
+     
+    """
+    if checktype == 'dir':
+        if not path.isdir(filepath):
+            print('WARNING: Save Path does not exist.')
+            return False
+    if checktype == 'file':
+        if not path.isfile(filepath):
+            print('WARNING: File path does not exist.')
+            return False
+    return True
+
+def check_inputs(inputs, file_types):
+    """Checks if multiple inputs exist as files or directories. Uses the is_path function. 
+    
+    Args:
+    inputs list or array: Contains all the directories to check.
+    file_types list or array: Contains the expected file type for each input. Each list value should be a string of either 'file' or 'dir'
+    
+    Returns:
+    A boolean value: true only if the all path or directories exist and false otherwise.
+     
+    """
+    for i, filepath in enumerate(inputs):
+        if not is_path(filepath, file_types[i]):
+            return False
+    return True
+
 
 def load_data(messages_filepath, categories_filepath):
     """Load csv data and create a dataframes from filepaths.
@@ -51,23 +91,21 @@ def save_data(df, database_filename):
     
     Args:
     df pandas.Dataframe: A pandas dataframe to save
-    database_filename str: A filename for the database name
+    database_filename str: A filepath for the database name
     
     Returns:
     A cleaned pandas dataframe.
     """
-    if database_filename[-3:] != '.db':
-        database_filename = database_filename+'.db'
     database_filename = 'sqlite:///'+database_filename
-    engine = create_engine(database)
-    df.to_sql(df, engine, index=False, if_exists='replace')
-    pass
+    engine = create_engine(database_filename)
+    df.to_sql(name="messages", con=engine, index=False, if_exists='replace')
 
 
 def main():
-    if len(sys.argv) == 4:
-
-        messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
+    inputs = sys.argv
+    file_types = ['file','file']
+    if (len(inputs) == 4) and check_inputs(inputs[1:-1], file_types):
+        messages_filepath, categories_filepath, database_filepath = inputs[1:]
 
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'
               .format(messages_filepath, categories_filepath))
