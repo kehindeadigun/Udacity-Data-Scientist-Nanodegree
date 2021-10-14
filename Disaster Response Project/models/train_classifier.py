@@ -87,7 +87,7 @@ def build_model():
     parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(1,30,5)) }
     
     model = GridSearchCV(pipeline, parameters, verbose=1)
-    return pipeline
+    return model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -124,7 +124,7 @@ def save_model(model, model_filepath=''):
     except:
         best_model = model
     
-    joblib.dump(best_model, model_filepath, compress=1)
+    joblib.dump(best_model, model_filepath, compress=True)
 
 
 def main():
