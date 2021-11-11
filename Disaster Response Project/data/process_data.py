@@ -5,8 +5,6 @@ from sqlalchemy import create_engine
 from os import path
 import re
 
-sys.path.insert(1, '../data/')
-
 def is_path(filepath, checktype='dir'):
     """Checks if a path or directory exists. 
     
