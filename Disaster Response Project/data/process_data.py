@@ -3,13 +3,16 @@ import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
 from os import path
+import re
+
+sys.path.insert(1, '../data/')
 
 def is_path(filepath, checktype='dir'):
     """Checks if a path or directory exists. 
     
     Args:
-    path str: A string representing a path or directory. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
-    checkdir str: A string representing a path or directory.
+    filepath str: A string representing a path or directory.
+    checktype str:  A string. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
     
     Returns:
     A boolean value: true if the path or directory exists and false otherwise.
@@ -41,9 +44,20 @@ def check_inputs(inputs, file_types):
             return False
     return True
 
+def clean_title(input_list):
+    """Takes in an input list of string text. Clean strings and returns a list of capitalized strings
+    
+    Args:
+    inputs list or array of strings: Contains all strings to reformat.
+
+    Returns:
+    A list value: A list of strings
+    """
+    return [re.sub(r'[^A-Za-z0-9]',' ',text).title() for text in input_list]
+
 
 def load_data(messages_filepath, categories_filepath):
-    """Load csv data and create a dataframes from filepaths.
+    """Loads csv data and creates a dataframes from filepaths.
     
     Args:
     messages_filepath str: The file path to the messages csv file

@@ -85,10 +85,10 @@ def build_model():
                          ('clf', classifier)
                         ])
     
-    parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(1,30,5)) }
+    parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(1,40,5)) }
     
     model = GridSearchCV(pipeline, parameters, verbose=1)
-    return pipeline
+    return model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):

@@ -8,8 +8,13 @@ from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Pie
 from sqlalchemy import create_engine
+import sys
+import re
+
+sys.path.insert(1, '../data')
+from process_data import clean_title
 
 
 app = Flask(__name__)
@@ -42,26 +47,92 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    category_dist = df.drop(columns=['id','message','original','genre']).sum(axis=0).reset_index()
+    category_dist = category_dist.rename(columns={0:'values', 'index':'columns'})
+    category_dist = category_dist.sort_values('values', ascending=False)
+    
+    category_names = clean_title(list(category_dist['columns']))
+    category_counts = list(category_dist['values'])
+
+    sorted_category_names = category_names[:8]
+    sorted_category_counts = category_counts[:8]
+    
+    #Summary Category data for donut chart
+    others_sum = sum(category_counts[8:])
+    sorted_category_names.insert(0, 'Others')
+    sorted_category_counts.insert(0, others_sum)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
+    marker_params = {
+                        'color': '#9ECAE1',
+                        'opacity': 0.6,
+                        'line': {
+                            'color': '#08306B',
+                            'width': 1.5
+                        }}
+
     graphs = [
         {
             'data': [
                 Bar(
                     x=genre_names,
-                    y=genre_counts
+                    y=genre_counts,
+                    marker=marker_params
                 )
             ],
 
             'layout': {
                 'title': 'Distribution of Message Genres',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "Number of Messages"
                 },
                 'xaxis': {
                     'title': "Genre"
                 }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_names[:5],
+                    y=category_counts[:5],
+                    marker=marker_params
+                )
+            ],
+
+            'layout': {
+                'title': 'Top Message Categories In Training Dataset',
+                'yaxis': {
+                    'title': "Number of Messages"
+                },
+                'xaxis': {
+                    'title': "Category"
+                }
+            }
+        },
+        {
+            'data': [
+                Pie(
+                    labels=sorted_category_names,
+                    values=sorted_category_counts,
+                    hole= .4,
+                    sort=True,
+                    textposition='inside', 
+                    textinfo='percent+label',
+                    insidetextfont=dict(size=11),
+                    insidetextorientation='radial',
+                    marker={
+                        'colors': ['#9ce3f0','#CFE5F0','#F7C59F','#6CC18D','#E37684','#70A3D0','#4D335B','#006BA6', '#D65780'],
+                        'line': {
+                            'color': '#08306B',
+                            'width': 1.9,
+                        }}
+                )
+            ],
+            'layout': {
+                'title': 'Message Categories In Training Dataset'
             }
         }
     ]
@@ -78,7 +149,7 @@ def index():
 @app.route('/go')
 def go():
     # save user input in query
-    query = request.args.get('query', '') 
+    query = request.args.get('query', '')
 
     # use model to predict classification for query
     classification_labels = model.predict([query])[0]
