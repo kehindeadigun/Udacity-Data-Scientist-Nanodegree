@@ -60,10 +60,10 @@ In a Python script, `train_classifier.py`, that runs a machine learning pipeline
 3. **Flask Web Application**
 A flask web app visualizes message traing data and provides a simple interface where workers can worker can input a new message and get classification results in several categories. Images below:
 
-![Web App Image 1](images/webapp-image1.jpg)
-![Web App Image 2](images/webapp-image2.jpg)
-![Web App Image 3](images/webapp-image3.jpg)
-![Web App Image 4](images/webapp-image4.jpg)
+![Web App Image 1](images/webapp-image1-min.jpg)
+![Web App Image 2](images/webapp-image2-min.jpg)
+![Web App Image 3](images/webapp-image3-min.jpg)
+![Web App Image 4](images/webapp-image4-min.jpg)
 
 
 ## Instructions on running the project:
