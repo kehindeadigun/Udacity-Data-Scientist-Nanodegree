@@ -10,12 +10,8 @@ from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar, Pie
 from sqlalchemy import create_engine
-import sys
+
 import re
-
-sys.path.insert(1, '../data')
-from process_data import clean_title
-
 
 app = Flask(__name__)
 
@@ -27,8 +23,20 @@ def tokenize(text):
     for tok in tokens:
         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
         clean_tokens.append(clean_tok)
-
     return clean_tokens
+
+#minor data cleaning function
+def clean_title(input_list):
+    """Takes in an input list of string text. Clean strings and returns a list of capitalized strings
+    
+    Args:
+    inputs list or array of strings: Contains all strings to reformat.
+
+    Returns:
+    A list value: A list of strings
+    """
+    return [re.sub(r'[^A-Za-z0-9]',' ',text).title() for text in input_list]
+
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
