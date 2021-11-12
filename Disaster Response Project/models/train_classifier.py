@@ -26,7 +26,6 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-
 def is_path(filepath, checktype='dir'):
     """Checks if a path or directory exists. 
     
@@ -65,7 +64,6 @@ def check_inputs(inputs, file_types):
             return False
     return True
 
-
 def load_data(database_filepath):
     """Loads data from a defined filepath
     
@@ -85,7 +83,7 @@ def load_data(database_filepath):
     X = df['message'].values
     Y = target.values
     category_names = np.array(target.columns)
-    
+
     return X, Y, category_names
 
 
@@ -101,6 +99,7 @@ def tokenize(text):
     clean_text = re.sub(r'[^a-zA-Z0-9]',' ',text)
     tokens = word_tokenize(clean_text)
     lemmatizer = WordNetLemmatizer()
+
     return [lemmatizer.lemmatize(word).lower().strip() for word in tokens if word not in stopwords.words("english")]
 
 def build_model():
@@ -112,6 +111,7 @@ def build_model():
     """
     
     vectorizer = CountVectorizer(tokenizer=tokenize)
+
     transformer = TfidfTransformer()
     classifier = MultiOutputClassifier(RandomForestClassifier(verbose=1))
     
@@ -121,7 +121,7 @@ def build_model():
                         ])
     
     parameters = { 'vect__ngram_range':[(1, 1),(1,2)], 'clf__estimator__n_estimators':list(range(10,40,10)) }
-    
+
     model = GridSearchCV(pipeline, parameters, verbose=1)
     return model
 
@@ -165,8 +165,10 @@ def save_model(model, model_filepath=''):
         best_model = model.best_estimator_
     except:
         best_model = model
-    
+ 
     joblib.dump(best_model, model_filepath, compress=True)
+    
+    print('Saved Successfully!')
 
 
 def main():

@@ -37,7 +37,6 @@ def clean_title(input_list):
     """
     return [re.sub(r'[^A-Za-z0-9]',' ',text).title() for text in input_list]
 
-
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('messages', engine)

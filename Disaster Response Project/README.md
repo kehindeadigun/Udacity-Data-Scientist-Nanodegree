@@ -1,5 +1,7 @@
 # Disaster Response Pipeline Project
 
+---
+
 ## Contents
 [Overview](## Overview)
 [Structure](## Project Structure)

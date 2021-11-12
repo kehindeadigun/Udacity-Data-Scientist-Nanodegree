@@ -7,14 +7,12 @@ import re
 
 def is_path(filepath, checktype='dir'):
     """Checks if a path or directory exists. 
-    
     Args:
     filepath str: A string representing a path or directory.
     checktype str:  A string. Accepts values 'dir' for directory and 'file' for file. Default: 'dir'
     
     Returns:
     A boolean value: true if the path or directory exists and false otherwise.
-     
     """
     if checktype == 'dir':
         if not path.isdir(filepath):
@@ -35,12 +33,12 @@ def check_inputs(inputs, file_types):
     
     Returns:
     A boolean value: true only if the all path or directories exist and false otherwise.
-     
     """
     for i, filepath in enumerate(inputs):
         if not is_path(filepath, file_types[i]):
             return False
     return True
+
 
 def clean_title(input_list):
     """Takes in an input list of string text. Clean strings and returns a list of capitalized strings
@@ -56,7 +54,7 @@ def clean_title(input_list):
 
 def load_data(messages_filepath, categories_filepath):
     """Loads csv data and creates a dataframes from filepaths.
-    
+
     Args:
     messages_filepath str: The file path to the messages csv file
     categories_filepath str: The file path to the categories csv file
