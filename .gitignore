@@ -1,3 +1,5 @@
 disres_env/
 models/classifier.pkl
 data/DisasterResponse.db
+*.db
+*.pkl

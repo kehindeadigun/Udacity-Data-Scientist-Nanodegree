@@ -78,8 +78,7 @@ def index():
                         'line': {
                             'color': '#08306B',
                             'width': 1.5
-                        }}
-
+                    }}
     graphs = [
         {
             'data': [
@@ -134,9 +133,9 @@ def index():
                         'colors': ['#9ce3f0','#CFE5F0','#F7C59F','#6CC18D','#E37684','#70A3D0','#4D335B','#006BA6', '#D65780'],
                         'line': {
                             'color': '#08306B',
-                            'width': 1.9,
-                        }}
-                )
+                            'width': 1.9,}
+                            }
+                    )
             ],
             'layout': {
                 'title': 'Message Categories In Training Dataset'
