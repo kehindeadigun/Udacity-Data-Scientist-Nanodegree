@@ -1,13 +1,15 @@
 # Disaster Response Pipeline Project
+Classifying messages for response and relief agencies. 
 
 ---
 
-## Contents
-[Overview](## Overview)
-[Structure](## Project Structure)
-[Descriptions](## Process Descriptions)
-[Instructions](## Instructions on running the project) 
-[Acknowledgements](## Acknowledgements) 
+## Table Of Contents
+ - [Overview](#overview)
+ - [Project Structure](#project-structure)
+ - [Process Descriptions](#process-descriptions)
+ - [Instructions On Running The Project](#instructions-on-running-the-project)
+ - [Dataset](#dataset)
+ - [Acknowledgements](#acknowledgements)
 
 
 ## Overview
@@ -16,26 +18,26 @@ In this project, I applied some data ETL data engineering skills to analyze disa
 
 ## Project Structure
 Disaster Response Main Folder
-   |--app
-   |   |--templates
-   |   |    |--master.html #home html page
-   |   |    |--go.html #message result response html page
-   |   |--run.py  #main flask file
-   | 
-   |--data
-   |   |--disaster_categories.csv #text data to process
-   |   |--disaster_messages.csv  #text data to process
-   |   |--DisasterResponse.db  #the database save
-   |   |--process_data.py  #python file for data processing & cleaning
-   |
-   |--models
-   |   |--classifier.pkl.csv #saved classifier of the ml model
-   |   |--train_classifier.py  #python script to train model on data
-   |
-   |--images #store for readme images
-   |
-   |--README.md
-   |--requirements.txt
+   |--app <br>
+   |   |--templates <br>
+   |   |    |--master.html #home html page <br>
+   |   |    |--go.html #message result response html page <br>
+   |   |--run.py  #main flask file <br>
+   | <br>
+   |--data <br>
+   |   |--disaster_categories.csv #text data to process <br>
+   |   |--disaster_messages.csv  #text data to process <br>
+   |   |--DisasterResponse.db  #the database save <br>
+   |   |--process_data.py  #python file for data processing & cleaning <br>
+   | <br>
+   |--models <br>
+   |   |--classifier.pkl.csv #saved classifier of the ml model <br>
+   |   |--train_classifier.py  #python script to train model on data <br>
+   | <br>
+   |--images #store for readme images <br>
+   | <br>
+   |--README.md <br>
+   |--requirements.txt 
 
 
 ## Process Descriptions
@@ -68,7 +70,7 @@ A flask web app visualizes message training data and provides a simple interface
 ![Web App Image 4](images/webapp-image4-min.jpg)
 
 
-## Instructions on running the project:
+## Instructions On Running The Project
 1. Run the following commands in the project's root directory to set up the database and classifier model.
 
     - To run ETL pipeline that cleans data and stores in database
