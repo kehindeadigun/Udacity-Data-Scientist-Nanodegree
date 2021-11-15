@@ -91,6 +91,10 @@ def clean_data(df):
     
     clean_df = pd.concat([df,categories_df], sort=False, axis=1)
     clean_df.drop_duplicates(inplace=True)
+    
+    #remove related column that are not binary
+    related_err_index = clean_df[clean_df['related']==2].index.values
+    clean_df = clean_df.drop(index=related_err_index)
         
     return clean_df
 
