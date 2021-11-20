@@ -25,7 +25,7 @@ Main Folder
    |--README.md <br>
 
 ## Medium Blog Post
-A technical writeup on the contents of this repository can be found in the medium link below. The link ![Churn Prediction with Sparkify]{()
+A technical writeup on the contents of this repository can be found in the medium link below. The link ![Churn Prediction with Sparkify](https://medium.com/@kehindeadiguno/analysing-customer-churn-with-pyspark-b23329e4525c)
 
 
 ![Web App Image 1](images/webapp-image1-min.jpg)
