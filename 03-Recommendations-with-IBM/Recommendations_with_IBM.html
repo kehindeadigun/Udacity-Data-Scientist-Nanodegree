@@ -13135,16 +13135,14 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Recommendations-with-IBM">Recommendations with IBM<a class="anchor-link" href="#Recommendations-with-IBM">&#182;</a></h1><p>In this notebook, you will be putting your recommendation skills to use on real data from the IBM Watson Studio platform.</p>
-<p>You may either submit your notebook through the workspace here, or you may work from your local machine and submit through the next page.  Either way assure that your code passes the project <a href="https://review.udacity.com/#!/rubrics/2322/view">RUBRIC</a>.  <strong>Please save regularly.</strong></p>
-<p>By following the table of contents, you will build out a number of different methods for making recommendations that can be used for different situations.</p>
+<h1 id="Recommendations-with-IBM">Recommendations with IBM<a class="anchor-link" href="#Recommendations-with-IBM">&#182;</a></h1><p>In this notebook, I work on putting your recommendation skills to use on real data from the IBM Watson Studio platform.</p>
+<p>By following the table of contents, we will build out a number of different methods for making recommendations that can be used for different situations.</p>
 <h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><p>I. <a href="#Exploratory-Data-Analysis">Exploratory Data Analysis</a><br>
 II. <a href="#Rank">Rank Based Recommendations</a><br>
 III. <a href="#User-User">User-User Based Collaborative Filtering</a><br>
-IV. <a href="#Content-Recs">Content Based Recommendations (EXTRA - NOT REQUIRED)</a><br>
+IV. <a href="#Content-Recs">Content Based Recommendations</a><br>
 V. <a href="#Matrix-Fact">Matrix Factorization</a><br>
 VI. <a href="#conclusions">Extras &amp; Concluding</a></p>
-<p>At the end of the notebook, you will find directions for how to submit your work.  Let's get started by importing the necessary libraries and reading in the data.</p>
 
 </div>
 </div>
@@ -13163,9 +13161,7 @@ VI. <a href="#conclusions">Extras &amp; Concluding</a></p>
 
 <span class="o">!</span>pip install progressbar
 <span class="kn">import</span> <span class="nn">progressbar</span>
-
 <span class="n">sns</span><span class="o">.</span><span class="n">set_palette</span><span class="p">(</span><span class="s2">&quot;pastel&quot;</span><span class="p">)</span>
-
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/user-item-interactions.csv&#39;</span><span class="p">)</span>
@@ -13197,94 +13193,13 @@ VI. <a href="#conclusions">Extras &amp; Concluding</a></p>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Show df to get an idea of the data</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[67]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>article_id</th>
-      <th>title</th>
-      <th>email</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1430.0</td>
-      <td>using pixiedust for fast, flexible, and easier...</td>
-      <td>ef5f11f77ba020cd36e1105a00ab868bbdbf7fe7</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1314.0</td>
-      <td>healthcare python streaming application demo</td>
-      <td>083cbdfa93c8444beaa4c5f5e0f5f9198e4f9e0b</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1429.0</td>
-      <td>use deep learning for image classification</td>
-      <td>b96a4f2e92d8572034b1e9b28f9ac673765cd074</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1338.0</td>
-      <td>ml optimization using cognitive assistant</td>
-      <td>06485706b34a5c9bf2a0ecdac41daf7e7654ceb7</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1276.0</td>
-      <td>deploy your python model as a restful api</td>
-      <td>f01220c46fc92c6e6b161b1849de11faacd7ccb2</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Show-df-to-get-an-idea-of-the-data">Show df to get an idea of the data<a class="anchor-link" href="#Show-df-to-get-an-idea-of-the-data">&#182;</a></h4><p>df.head()</p>
 
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -15121,7 +15036,7 @@ Given a new user, we cannot use any of the above <code>User-User Collaborative F
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Part-IV:-Content-Based-Recommendations-(EXTRA---NOT-REQUIRED)"><a class="anchor" id="Content-Recs">Part IV: Content Based Recommendations (EXTRA - NOT REQUIRED)</a><a class="anchor-link" href="#Part-IV:-Content-Based-Recommendations-(EXTRA---NOT-REQUIRED)">&#182;</a></h3><p>Another method we might use to make recommendations is to perform a ranking of the highest ranked articles associated with some term.  You might consider content to be the <strong>doc_body</strong>, <strong>doc_description</strong>, or <strong>doc_full_name</strong>.  There isn't one way to create a content based recommendation, especially considering that each of these columns hold content related information.</p>
+<h3 id="Part-IV:-Content-Based-Recommendations-(EXTRA)"><a class="anchor" id="Content-Recs">Part IV: Content Based Recommendations (EXTRA)</a><a class="anchor-link" href="#Part-IV:-Content-Based-Recommendations-(EXTRA)">&#182;</a></h3><p>Another method we might use to make recommendations is to perform a ranking of the highest ranked articles associated with some term.  You might consider content to be the <strong>doc_body</strong>, <strong>doc_description</strong>, or <strong>doc_full_name</strong>.  There isn't one way to create a content based recommendation, especially considering that each of these columns hold content related information.</p>
 <p><code>1.</code> Use the function body below to create a content based recommender.  Since there isn't one right answer for this recommendation tactic, no test functions are provided.  Feel free to change the function inputs if you decide you want to try a method that requires more input values.  The input values are currently set with one idea in mind that you may use to make content based recommendations.  One additional idea is that you might want to choose the most popular recommendations that meet your 'content criteria', but again, there is a lot of flexibility in how you might make these recommendations.</p>
 <h5 id="This-part-is-NOT-REQUIRED-to-pass-this-project.--However,-you-may-choose-to-take-this-on-as-an-extra-way-to-show-off-your-skills.">This part is NOT REQUIRED to pass this project.  However, you may choose to take this on as an extra way to show off your skills.<a class="anchor-link" href="#This-part-is-NOT-REQUIRED-to-pass-this-project.--However,-you-may-choose-to-take-this-on-as-an-extra-way-to-show-off-your-skills.">&#182;</a></h5>
 </div>
@@ -16920,7 +16835,7 @@ We can also run an experiments such as an A/B test. We can send different articl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">call</span>
@@ -16937,7 +16852,7 @@ We can also run an experiments such as an A/B test. We can send different articl
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[1]:</div>
+    <div class="prompt output_prompt">Out[2]:</div>
 
 
 
