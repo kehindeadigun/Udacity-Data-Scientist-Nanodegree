@@ -3,7 +3,7 @@ A Data Science Blog Post Analyzing Stack Overflow Data
 ---
 
 ## Overview
-In this project, I worked on analysing Stack Overflows 2020 survey data using the Crisp-DM process and getting answers to business questions. I used python, pandas, matplotlib and seaborn to answer questions.
+In this project, I worked on analysing Stack Overflows 2020 developer survey data using the Crisp-DM process and getting answers to business questions. I used python, pandas, matplotlib and seaborn to answer questions.
 
 The project covered:
 Analyzing a dataset using the CRISP-DM CRISP-DM process which covers the 6 stage process.
