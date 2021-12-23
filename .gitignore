@@ -3,3 +3,4 @@ models/classifier.pkl
 data/DisasterResponse.db
 *.db
 *.pkl
+**/.DS_Store
